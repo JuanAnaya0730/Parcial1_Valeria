@@ -28,14 +28,14 @@ def Marca():
           "4. PipeteLine.")
 
 lab_metrologia = []
-MCUL = [] # Mediciones de 100uL
-MMUL = [] # Mediciones de 1000uL
 marcas = ["Brand", "3M", "Rainin", "PipeteLine"]
+contadorMarcas = [0,0,0,0]
 
 while True:
     
-    clearScreen()
-    
+    MCUL = [] # Mediciones de 100uL
+    MMUL = [] # Mediciones de 1000uL
+       
     Menu() # Se imprime en consola el menu de opciones
     option = input("Opcion: ") # option es la variable que almacenara la opcion escogida por el usuario
     clearScreen()
@@ -58,61 +58,78 @@ while True:
             marca = input("Opcion: ") # Se le pide al usuario que ingrese una nueva opcion
             clearScreen()
         
+        contadorMarcas[int(marca)-1] += 1
         marca = marcas[int(marca)-1]
         
         serial = input("Ingrese el serial: ") 
         clearScreen()
         
+        media = 0
         print("Ingrese los resultados para 100uL")
         for i in range(0,3):
-            aux=int(input("Resultado "+str(i+1)+": "))
+            aux=float(input("Resultado "+str(i+1)+": "))
             clearScreen()
             
             while(aux<90 or aux >110):
                 print("¡ALERTA! de La medicion de 100uL esta fuera del rango aceptable.")
-                aux=int(input("Resultado "+str(i+1)+": "))
+                aux=float(input("Resultado "+str(i+1)+": "))
                 clearScreen()
-                
+            
+            media += aux;            
             MCUL.append(aux)
         
+        MCUL.append(media/3)
+        
+        media = 0        
         print("Ingrese los resultados para 1000uL")
         for i in range(0,3):
-            aux=int(input("Resultado "+str(i+1)+": "))
+            aux=float(input("Resultado "+str(i+1)+": "))
             clearScreen()
             
             while(aux<900 or aux >1100):
-                print("¡ALERTA! de La medicion de 100uL esta fuera del rango aceptable.")
-                aux=int(input("Resultado "+str(i+1)+": "))
+                print("¡ALERTA! de La medicion de 1000uL esta fuera del rango aceptable.")
+                aux=float(input("Resultado "+str(i+1)+": "))
                 clearScreen()
-                
+            
+            media += aux
             MMUL.append(aux)
+            
+        MMUL.append(media/3)
         
-        lab_metrologia.append([marca, serial, MCUL, MMUL])
-        print(lab_metrologia)        
+        lab_metrologia.append([marca, serial, MCUL, MMUL])      
                       
     elif(int(option) == 2):
-        print("El usuario va a consultar informacion.")
+        existeSerial = False
+        serial = input("Ingrese serial a consultar: ")
+        clearScreen()
+        
+        for i in lab_metrologia:
+            if(i[1] == serial):
+                existeSerial = True
+                print("Informacion de la pipeta numero", serial)
+                print("Marca:", i[0])
+                
+                print("Las medidas para 100uL(10%) fueron: ")
+                for j in range(0,3):
+                    print("Medida "+str(j+1)+":", i[2][j], "uL")
+                print("Con una media de", i[2][3])
+                
+                print("Las medidas para 1000uL(100%) fueron:")
+                for j in range(0,3):
+                    print("Medida "+str(j+1)+":", i[3][j], "uL")
+                print("Con una media de", i[3][3], "\n")
+                
+        if(not(existeSerial)):
+            print("La pipeta numero", serial, "no esta en la base de datos.\n")
     
     elif(int(option) == 3):
-        print("El usuario quiere ver estadisticas.")
+        print("             Estadisticos")
+        print("El numero de pipetas de la marca Brand es de:", contadorMarcas[0])
+        print("El numero de pipetas de la marca 3M es de:", contadorMarcas[1])
+        print("El numero de pipetas de la marca Rainin es de:", contadorMarcas[2])
+        print("El numero de pipetas de la marca PipeteLine es de:", contadorMarcas[3])
     
-    elif(int(option) == 4):
+    else:
         break;
-        
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     
